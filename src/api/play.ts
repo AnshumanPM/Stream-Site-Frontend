@@ -16,7 +16,7 @@ export async function fetchPlayById(url_id: string): Promise<PlayResponse> {
 
 export async function fetchPlayByMeta(
   url: string,
-  meta: string
+  meta: string,
 ): Promise<PlayResponse> {
   const res = await fetch(`${BASE_URL}/api/play/meta`, {
     method: "POST",

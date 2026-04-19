@@ -9,17 +9,53 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FileVideo, HardDrive, User, Clock, Download, Play, Send } from "lucide-react";
+import {
+  FileVideo,
+  HardDrive,
+  User,
+  Clock,
+  Download,
+  Play,
+  Send,
+} from "lucide-react";
 
 const streamApps = (url: string, name: string) => [
-  { id: "mx",       label: "MX Player",  href: `intent:${url}#Intent;package=com.mxtech.videoplayer.ad;S.title=${name};end` },
-  { id: "vlc",      label: "VLC Mobile", href: `vlc://${url.replace(/^https?:\/\//, "")}` },
-  { id: "playit",   label: "PlayIt",     href: `playit://playerv2/video?url=${url}&` },
-  { id: "splayer",  label: "SPlayer",    href: `intent:${url}#Intent;action=com.young.simple.player.playback_online;package=com.young.simple.player;end` },
-  { id: "jplayer",  label: "JPlayer",    href: `intent:${url}#Intent;package=com.qp.jplayer;end` },
-  { id: "kmplayer", label: "KMPlayer",   href: `intent:${url}#Intent;package=com.kmplayer;end` },
-  { id: "hdplayer", label: "HDPlayer",   href: `intent:${url}#Intent;package=uplayer.video.player;end` },
-  { id: "nplayer",  label: "nPlayer",    href: `nplayer-${url}` },
+  {
+    id: "mx",
+    label: "MX Player",
+    href: `intent:${url}#Intent;package=com.mxtech.videoplayer.ad;S.title=${name};end`,
+  },
+  {
+    id: "vlc",
+    label: "VLC Mobile",
+    href: `vlc://${url.replace(/^https?:\/\//, "")}`,
+  },
+  {
+    id: "playit",
+    label: "PlayIt",
+    href: `playit://playerv2/video?url=${url}&`,
+  },
+  {
+    id: "splayer",
+    label: "SPlayer",
+    href: `intent:${url}#Intent;action=com.young.simple.player.playback_online;package=com.young.simple.player;end`,
+  },
+  {
+    id: "jplayer",
+    label: "JPlayer",
+    href: `intent:${url}#Intent;package=com.qp.jplayer;end`,
+  },
+  {
+    id: "kmplayer",
+    label: "KMPlayer",
+    href: `intent:${url}#Intent;package=com.kmplayer;end`,
+  },
+  {
+    id: "hdplayer",
+    label: "HDPlayer",
+    href: `intent:${url}#Intent;package=uplayer.video.player;end`,
+  },
+  { id: "nplayer", label: "nPlayer", href: `nplayer-${url}` },
 ];
 
 export default function VideoInfo({
@@ -36,7 +72,6 @@ export default function VideoInfo({
   return (
     <div className="bg-card text-card-foreground rounded-b-xl p-3 space-y-4">
       <div className="space-y-2">
-
         <Button asChild className="w-full">
           <a href={video_url} download={f_name}>
             <Download className="size-4" />
@@ -61,7 +96,9 @@ export default function VideoInfo({
               <DropdownMenuItem
                 key={app.id}
                 className="justify-center cursor-pointer"
-                onClick={() => { window.location.href = app.href; }}
+                onClick={() => {
+                  window.location.href = app.href;
+                }}
               >
                 {app.label}
               </DropdownMenuItem>
@@ -76,7 +113,6 @@ export default function VideoInfo({
             <Send className="size-4" />
           </a>
         </Button>
-
       </div>
 
       <Separator />

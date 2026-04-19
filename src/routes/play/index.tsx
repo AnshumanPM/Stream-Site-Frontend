@@ -17,7 +17,9 @@ export const Route = createFileRoute("/play/")({
     return await fetchPlayByMeta(url, meta);
   },
   errorComponent: ({ error }) => (
-    <ErrorPage message={error instanceof Error ? error.message : "Unknown error"} />
+    <ErrorPage
+      message={error instanceof Error ? error.message : "Unknown error"}
+    />
   ),
   component: PlayByMeta,
 });
@@ -25,11 +27,11 @@ export const Route = createFileRoute("/play/")({
 function PlayByMeta() {
   const data = Route.useLoaderData();
   return (
-      <div className="flex justify-center items-start min-h-screen bg-background p-2">
-        <div className="w-full max-w-md shadow-md rounded-xl">
-          <VideoPlayer video_url={data.video_url} />
-          <VideoInfo {...data} />
-        </div>
+    <div className="flex justify-center items-start min-h-screen bg-background p-2">
+      <div className="w-full max-w-md shadow-md rounded-xl">
+        <VideoPlayer video_url={data.video_url} />
+        <VideoInfo {...data} />
       </div>
-    );
+    </div>
+  );
 }

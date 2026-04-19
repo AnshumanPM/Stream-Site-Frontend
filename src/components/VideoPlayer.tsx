@@ -7,25 +7,43 @@ interface VideoPlayerProps {
   video_url: string;
 }
 
-type ScreenMode = "Original" | "Square" | "Classic" | "Wide" | "Cinema" | "Ultrawide" | "Fill";
+type ScreenMode =
+  | "Original"
+  | "Square"
+  | "Classic"
+  | "Wide"
+  | "Cinema"
+  | "Ultrawide"
+  | "Fill";
 
-const SCREEN_MODES: ScreenMode[] = ["Original", "Square", "Classic", "Wide", "Cinema", "Ultrawide", "Fill"];
+const SCREEN_MODES: ScreenMode[] = [
+  "Original",
+  "Square",
+  "Classic",
+  "Wide",
+  "Cinema",
+  "Ultrawide",
+  "Fill",
+];
 
-const ZOOM_MAP: Record<ScreenMode, { scaleX: number; scaleY: number; objectFit: string }> = {
-  Original:  { scaleX: 1,    scaleY: 1,    objectFit: "contain" },
-  Square:    { scaleX: 0.75, scaleY: 1,    objectFit: "fill" },
-  Classic:   { scaleX: 0.85, scaleY: 1,    objectFit: "fill" },
-  Wide:      { scaleX: 1,    scaleY: 1,    objectFit: "contain" },
-  Cinema:    { scaleX: 1,    scaleY: 0.76, objectFit: "fill" },
-  Ultrawide: { scaleX: 1,    scaleY: 0.56, objectFit: "fill" },
-  Fill:      { scaleX: 1,    scaleY: 1,    objectFit: "cover" },
+const ZOOM_MAP: Record<
+  ScreenMode,
+  { scaleX: number; scaleY: number; objectFit: string }
+> = {
+  Original: { scaleX: 1, scaleY: 1, objectFit: "contain" },
+  Square: { scaleX: 0.75, scaleY: 1, objectFit: "fill" },
+  Classic: { scaleX: 0.85, scaleY: 1, objectFit: "fill" },
+  Wide: { scaleX: 1, scaleY: 1, objectFit: "contain" },
+  Cinema: { scaleX: 1, scaleY: 0.76, objectFit: "fill" },
+  Ultrawide: { scaleX: 1, scaleY: 0.56, objectFit: "fill" },
+  Fill: { scaleX: 1, scaleY: 1, objectFit: "cover" },
 };
 
 let registered = false;
 
 function registerScreenModeComponents(
   onModeChange: (mode: ScreenMode) => void,
-  getMode: () => ScreenMode
+  getMode: () => ScreenMode,
 ) {
   if (registered) return;
   registered = true;
@@ -44,14 +62,18 @@ function registerScreenModeComponents(
       });
       this.modeValue = modeValue;
 
-      const textEl = this.el().querySelector(".vjs-menu-item-text") as HTMLElement | null;
+      const textEl = this.el().querySelector(
+        ".vjs-menu-item-text",
+      ) as HTMLElement | null;
       if (textEl) textEl.textContent = this.modeValue;
     }
 
     handleClick() {
       super.handleClick();
       onModeChange(this.modeValue);
-      const menuButton = this.player().controlBar?.getChild("ScreenModeMenuButton") as any;
+      const menuButton = this.player().controlBar?.getChild(
+        "ScreenModeMenuButton",
+      );
       menuButton?.menu?.children().forEach((item: any) => {
         if (item instanceof ScreenModeMenuItem) {
           item.selected(item.modeValue === this.modeValue);
@@ -70,7 +92,9 @@ function registerScreenModeComponents(
     }
 
     createItems() {
-      return SCREEN_MODES.map((modeValue) => new ScreenModeMenuItem(this.player_, { modeValue }));
+      return SCREEN_MODES.map(
+        (modeValue) => new ScreenModeMenuItem(this.player_, { modeValue }),
+      );
     }
 
     controlText_ = "Screen";
@@ -105,7 +129,8 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
         aspectRatio: "16:9",
         autoplay: false,
         playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
-        poster: "https://cdn.jsdelivr.net/npm/@googledrive/index@2.2.3/images/poster.jpg",
+        poster:
+          "https://cdn.jsdelivr.net/npm/@googledrive/index@2.2.3/images/poster.jpg",
         enableSmoothSeeking: true,
         sources: [
           { src: video_url, type: "video/mp4" },
@@ -165,7 +190,7 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
     if (!playerRef.current) return;
 
     const applyZoom = () => {
-      const videoEl = playerRef.current!.el().querySelector("video") as HTMLVideoElement | null;
+      const videoEl = playerRef.current!.el().querySelector("video");
       if (!videoEl) return;
       const { scaleX, scaleY, objectFit } = ZOOM_MAP[screenMode];
       videoEl.style.transition = "transform 0.3s ease";

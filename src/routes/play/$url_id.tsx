@@ -9,7 +9,9 @@ export const Route = createFileRoute("/play/$url_id")({
     return await fetchPlayById(params.url_id);
   },
   errorComponent: ({ error }) => (
-    <ErrorPage message={error instanceof Error ? error.message : "Unknown error"} />
+    <ErrorPage
+      message={error instanceof Error ? error.message : "Unknown error"}
+    />
   ),
   component: PlayById,
 });

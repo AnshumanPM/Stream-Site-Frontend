@@ -1,19 +1,15 @@
 import { useEffect, useRef } from "react";
-import { HeadContent, Outlet, createRootRoute } from "@tanstack/react-router";
+import { Outlet, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AntiAdblocker from "#/components/AntiAdblocker";
 
 import "../styles.css";
 
 export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { title: "Stream Site" },
-    ],
-  }),
   component: RootComponent,
 });
 
@@ -40,19 +36,21 @@ function RootComponent() {
 
   return (
     <>
-      <HeadContent />
       <TooltipProvider>
         <div className="flex flex-col min-h-screen bg-background text-foreground">
           <Header logoRef={logoRef} />
           <main className="grow">
             <Outlet />
+            <AntiAdblocker />
           </main>
           <Footer />
         </div>
       </TooltipProvider>
       <TanStackDevtools
         config={{ position: "bottom-right" }}
-        plugins={[{ name: "TanStack Router", render: <TanStackRouterDevtoolsPanel /> }]}
+        plugins={[
+          { name: "TanStack Router", render: <TanStackRouterDevtoolsPanel /> },
+        ]}
       />
     </>
   );
