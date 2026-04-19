@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Outlet, createRootRoute } from "@tanstack/react-router";
+import { HeadContent, Outlet, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +9,11 @@ import Footer from "@/components/Footer";
 import "../styles.css";
 
 export const Route = createRootRoute({
+  head: () => ({
+    meta: [
+      { title: "Stream Site" },
+    ],
+  }),
   component: RootComponent,
 });
 
@@ -35,6 +40,7 @@ function RootComponent() {
 
   return (
     <>
+      <HeadContent />
       <TooltipProvider>
         <div className="flex flex-col min-h-screen bg-background text-foreground">
           <Header logoRef={logoRef} />
