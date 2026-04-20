@@ -3,11 +3,17 @@ import { fetchPlayById } from "@/api/play";
 import VideoPlayer from "@/components/VideoPlayer";
 import VideoInfo from "@/components/VideoInfo";
 import ErrorPage from "@/components/ErrorPage";
+import { Spinner } from "@/components/ui/spinner";
 
 export const Route = createFileRoute("/play/$url_id")({
   loader: async ({ params }) => {
     return await fetchPlayById(params.url_id);
   },
+  pendingComponent: () => (
+    <div className="flex justify-center items-center min-h-screen bg-background">
+      <Spinner className="size-6 text-primary" />
+    </div>
+  ),
   errorComponent: ({ error }) => (
     <ErrorPage
       message={error instanceof Error ? error.message : "Unknown error"}
