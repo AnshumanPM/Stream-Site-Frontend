@@ -347,15 +347,6 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
           flex: 1 1 auto;
           min-width: 0;
         }
-        @media (max-width: 480px) {
-          .video-js .vjs-skip-backward,
-          .video-js .vjs-skip-forward,
-          .video-js .vjs-volume-panel,
-          .video-js .vjs-screen-mode-button,
-          .video-js .vjs-playback-rate {
-            display: none !important;
-          }
-        }
       `}</style>
     </div>
   );
