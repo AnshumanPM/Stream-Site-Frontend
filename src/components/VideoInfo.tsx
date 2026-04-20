@@ -72,12 +72,15 @@ export default function VideoInfo({
   return (
     <div className="bg-card text-card-foreground rounded-b-xl p-3 space-y-4">
       <div className="space-y-2">
-        <Button asChild className="w-full">
-          <a href={video_url} download={f_name}>
-            <Download className="size-4" />
-            Download
-            <Download className="size-4" />
-          </a>
+        <Button
+          className="w-full"
+          onClick={() => {
+            window.location.href = video_url;
+          }}
+        >
+          <Download className="size-4" />
+          Download
+          <Download className="size-4" />
         </Button>
 
         <DropdownMenu open={streamOpen} onOpenChange={setStreamOpen}>
@@ -106,12 +109,16 @@ export default function VideoInfo({
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button asChild variant="outline" className="w-full">
-          <a href={tg_file_url} target="_blank" rel="noreferrer">
-            <Send className="size-4" />
-            Telegram Download
-            <Send className="size-4" />
-          </a>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => {
+            window.location.href = tg_file_url;
+          }}
+        >
+          <Send className="size-4" />
+          Telegram Download
+          <Send className="size-4" />
         </Button>
       </div>
 

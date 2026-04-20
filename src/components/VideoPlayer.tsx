@@ -39,6 +39,8 @@ const ZOOM_MAP: Record<
   Fill: { scaleX: 1, scaleY: 1, objectFit: "cover" },
 };
 
+const PLAYBACK_RATES = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+
 let registered = false;
 
 function registerScreenModeComponents(
@@ -116,6 +118,151 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
   };
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const player = playerRef.current;
+      if (!player || player.isDisposed()) return;
+
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      )
+        return;
+
+      const duration = player.duration() ?? 0;
+
+      const seek = (delta: number) => {
+        const current = player.currentTime() ?? 0;
+        player.currentTime(Math.max(0, Math.min(duration, current + delta)));
+      };
+
+      const changeVolume = (delta: number) => {
+        const vol = Math.max(0, Math.min(1, (player.volume() ?? 1) + delta));
+        player.volume(vol);
+        if (player.muted() && delta > 0) player.muted(false);
+      };
+
+      const changeSpeed = (direction: 1 | -1) => {
+        const idx = PLAYBACK_RATES.indexOf(player.playbackRate() ?? 1);
+        const nextIdx = Math.max(
+          0,
+          Math.min(PLAYBACK_RATES.length - 1, idx + direction),
+        );
+        player.playbackRate(PLAYBACK_RATES[nextIdx]);
+      };
+
+      switch (e.key) {
+        case " ":
+        case "k":
+        case "K":
+          e.preventDefault();
+          player.paused() ? player.play() : player.pause();
+          break;
+
+        case "ArrowLeft":
+          e.preventDefault();
+          seek(-5);
+          break;
+
+        case "ArrowRight":
+          e.preventDefault();
+          seek(5);
+          break;
+
+        case "j":
+        case "J":
+          e.preventDefault();
+          seek(-10);
+          break;
+
+        case "l":
+        case "L":
+          e.preventDefault();
+          seek(10);
+          break;
+
+        case "ArrowUp":
+          e.preventDefault();
+          changeVolume(0.05);
+          break;
+
+        case "ArrowDown":
+          e.preventDefault();
+          changeVolume(-0.05);
+          break;
+
+        case "m":
+        case "M":
+          e.preventDefault();
+          player.muted(!player.muted());
+          break;
+
+        case "f":
+        case "F":
+          e.preventDefault();
+          player.isFullscreen()
+            ? player.exitFullscreen()
+            : player.requestFullscreen();
+          break;
+
+        case "0":
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+          if (!e.ctrlKey && !e.metaKey && !e.altKey) {
+            e.preventDefault();
+            player.currentTime(duration * parseInt(e.key, 10) * 0.1);
+          }
+          break;
+
+        case "Home":
+          e.preventDefault();
+          player.currentTime(0);
+          break;
+
+        case "End":
+          e.preventDefault();
+          player.currentTime(duration);
+          break;
+
+        case ",":
+          if (player.paused()) {
+            e.preventDefault();
+            player.currentTime((player.currentTime() ?? 0) - 1 / 30);
+          }
+          break;
+
+        case ".":
+          if (player.paused()) {
+            e.preventDefault();
+            player.currentTime((player.currentTime() ?? 0) + 1 / 30);
+          }
+          break;
+
+        case ">":
+          e.preventDefault();
+          changeSpeed(1);
+          break;
+
+        case "<":
+          e.preventDefault();
+          changeSpeed(-1);
+          break;
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  useEffect(() => {
     registerScreenModeComponents(handleModeChange, () => screenModeRef.current);
 
     if (!playerRef.current && containerRef.current) {
@@ -128,15 +275,14 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
         fluid: true,
         aspectRatio: "16:9",
         autoplay: false,
-        playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
-        poster:
-          "https://cdn.jsdelivr.net/npm/@googledrive/index@2.2.3/images/poster.jpg",
+        playbackRates: PLAYBACK_RATES,
         enableSmoothSeeking: true,
         sources: [
           { src: video_url, type: "video/mp4" },
           { src: video_url, type: "video/webm" },
         ],
         controlBar: {
+          remainingTimeDisplay: false,
           pictureInPictureToggle: false,
           skipButtons: { forward: 10, backward: 10 },
           children: [
@@ -215,6 +361,11 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
           content: "⛶";
           font-size: 1.1em;
           line-height: 3;
+        }
+        .video-js .vjs-current-time,
+        .video-js .vjs-time-divider,
+        .video-js .vjs-duration {
+          display: flex !important;
         }
       `}</style>
     </div>

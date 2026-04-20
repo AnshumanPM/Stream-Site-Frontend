@@ -31,7 +31,14 @@ function RootComponent() {
     applyTheme(mq.matches);
     const handler = (e: MediaQueryListEvent) => applyTheme(e.matches);
     mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+
+    const disableContextMenu = (e: MouseEvent) => e.preventDefault();
+    window.addEventListener("contextmenu", disableContextMenu);
+
+    return () => {
+      mq.removeEventListener("change", handler);
+      window.removeEventListener("contextmenu", disableContextMenu);
+    };
   }, []);
 
   return (
