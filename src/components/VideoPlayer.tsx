@@ -145,10 +145,7 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
 
       const changeSpeed = (direction: 1 | -1) => {
         const idx = PLAYBACK_RATES.indexOf(player.playbackRate() ?? 1);
-        const nextIdx = Math.max(
-          0,
-          Math.min(PLAYBACK_RATES.length - 1, idx + direction),
-        );
+        const nextIdx = Math.max(0, Math.min(PLAYBACK_RATES.length - 1, idx + direction));
         player.playbackRate(PLAYBACK_RATES[nextIdx]);
       };
 
@@ -159,53 +156,42 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
           e.preventDefault();
           player.paused() ? player.play() : player.pause();
           break;
-
         case "ArrowLeft":
           e.preventDefault();
           seek(-5);
           break;
-
         case "ArrowRight":
           e.preventDefault();
           seek(5);
           break;
-
         case "j":
         case "J":
           e.preventDefault();
           seek(-10);
           break;
-
         case "l":
         case "L":
           e.preventDefault();
           seek(10);
           break;
-
         case "ArrowUp":
           e.preventDefault();
           changeVolume(0.05);
           break;
-
         case "ArrowDown":
           e.preventDefault();
           changeVolume(-0.05);
           break;
-
         case "m":
         case "M":
           e.preventDefault();
           player.muted(!player.muted());
           break;
-
         case "f":
         case "F":
           e.preventDefault();
-          player.isFullscreen()
-            ? player.exitFullscreen()
-            : player.requestFullscreen();
+          player.isFullscreen() ? player.exitFullscreen() : player.requestFullscreen();
           break;
-
         case "0":
         case "1":
         case "2":
@@ -221,36 +207,30 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
             player.currentTime(duration * parseInt(e.key, 10) * 0.1);
           }
           break;
-
         case "Home":
           e.preventDefault();
           player.currentTime(0);
           break;
-
         case "End":
           e.preventDefault();
           player.currentTime(duration);
           break;
-
         case ",":
           if (player.paused()) {
             e.preventDefault();
             player.currentTime((player.currentTime() ?? 0) - 1 / 30);
           }
           break;
-
         case ".":
           if (player.paused()) {
             e.preventDefault();
             player.currentTime((player.currentTime() ?? 0) + 1 / 30);
           }
           break;
-
         case ">":
           e.preventDefault();
           changeSpeed(1);
           break;
-
         case "<":
           e.preventDefault();
           changeSpeed(-1);
@@ -282,7 +262,10 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
           { src: video_url, type: "video/webm" },
         ],
         controlBar: {
-          remainingTimeDisplay: false,
+          remainingTimeDisplay: true,
+          currentTimeDisplay: false,
+          timeDivider: false,
+          durationDisplay: false,
           pictureInPictureToggle: false,
           skipButtons: { forward: 10, backward: 10 },
           children: [
@@ -290,10 +273,8 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
             "skipBackward",
             "skipForward",
             "volumePanel",
-            "currentTimeDisplay",
-            "timeDivider",
-            "durationDisplay",
             "progressControl",
+            "remainingTimeDisplay",
             "playbackRateMenuButton",
             "ScreenModeMenuButton",
             "fullscreenToggle",
@@ -362,10 +343,18 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
           font-size: 1.1em;
           line-height: 3;
         }
-        .video-js .vjs-current-time,
-        .video-js .vjs-time-divider,
-        .video-js .vjs-duration {
-          display: flex !important;
+        .video-js .vjs-progress-control {
+          flex: 1 1 auto;
+          min-width: 0;
+        }
+        @media (max-width: 480px) {
+          .video-js .vjs-skip-backward,
+          .video-js .vjs-skip-forward,
+          .video-js .vjs-volume-panel,
+          .video-js .vjs-screen-mode-button,
+          .video-js .vjs-playback-rate {
+            display: none !important;
+          }
         }
       `}</style>
     </div>
