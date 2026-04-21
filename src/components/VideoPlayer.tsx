@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import type Player from "video.js/dist/types/player";
+import { Monitor } from "lucide-react";
+import { renderToStaticMarkup } from "react-dom/server";
 
 interface VideoPlayerProps {
   video_url: string;
@@ -40,6 +42,10 @@ const ZOOM_MAP: Record<
 };
 
 const PLAYBACK_RATES = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+
+const MONITOR_SVG = renderToStaticMarkup(
+  <Monitor size={16} color="white" strokeWidth={2} />
+);
 
 let registered = false;
 
@@ -87,6 +93,15 @@ function registerScreenModeComponents(
   class ScreenModeMenuButton extends MenuButton {
     constructor(player: any) {
       super(player, {});
+      const placeholder = this.el().querySelector(
+        ".vjs-icon-placeholder",
+      ) as HTMLElement | null;
+      if (placeholder) {
+        placeholder.style.display = "flex";
+        placeholder.style.alignItems = "center";
+        placeholder.style.justifyContent = "center";
+        placeholder.innerHTML = MONITOR_SVG;
+      }
     }
 
     buildCSSClass() {
@@ -145,7 +160,10 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
 
       const changeSpeed = (direction: 1 | -1) => {
         const idx = PLAYBACK_RATES.indexOf(player.playbackRate() ?? 1);
-        const nextIdx = Math.max(0, Math.min(PLAYBACK_RATES.length - 1, idx + direction));
+        const nextIdx = Math.max(
+          0,
+          Math.min(PLAYBACK_RATES.length - 1, idx + direction),
+        );
         player.playbackRate(PLAYBACK_RATES[nextIdx]);
       };
 
@@ -190,7 +208,9 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
         case "f":
         case "F":
           e.preventDefault();
-          player.isFullscreen() ? player.exitFullscreen() : player.requestFullscreen();
+          player.isFullscreen()
+            ? player.exitFullscreen()
+            : player.requestFullscreen();
           break;
         case "0":
         case "1":
@@ -291,7 +311,10 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
         playerRef.current!.on("fullscreenchange", () => {
           if (playerRef.current!.isFullscreen() && screen.orientation) {
             screen.orientation.lock("landscape").catch(() => {});
-          } else if (!playerRef.current!.isFullscreen() && screen.orientation) {
+          } else if (
+            !playerRef.current!.isFullscreen() &&
+            screen.orientation
+          ) {
             screen.orientation.unlock();
           }
         });
@@ -339,9 +362,12 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
       <div ref={containerRef} className="w-full" />
       <style>{`
         .vjs-screen-mode-button .vjs-icon-placeholder::before {
-          content: "⛶";
-          font-size: 1.1em;
-          line-height: 3;
+          content: none;
+        }
+        .vjs-screen-mode-button .vjs-icon-placeholder {
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .video-js .vjs-progress-control {
           flex: 1 1 auto;
