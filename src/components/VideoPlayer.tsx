@@ -277,6 +277,7 @@ export default function VideoPlayer({ video_url }: VideoPlayerProps) {
         autoplay: false,
         playbackRates: PLAYBACK_RATES,
         enableSmoothSeeking: true,
+        poster: "https://cdn.jsdelivr.net/npm/@googledrive/index@2.2.3/images/poster.jpg",
         sources: [
           { src: video_url, type: "video/mp4" },
           { src: video_url, type: "video/webm" },
